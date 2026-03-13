@@ -1,0 +1,30 @@
+{
+  "name": "aidock",
+  "version": "0.1.0",
+  "description": "Multi-AI CLI collaborative development framework — human-routed orchestration for Claude, Codex, and Gemini",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "aidock": "./bin/aidock.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "start": "node dist/cli.js",
+    "test": "node --test tests/"
+  },
+  "keywords": ["ai", "cli", "claude", "codex", "gemini", "orchestration", "multi-agent"],
+  "license": "MIT",
+  "dependencies": {
+    "commander": "^13.1.0",
+    "nanoid": "^5.1.5"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.0",
+    "typescript": "^5.8.0"
+  },
+  "type": "module",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

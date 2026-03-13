@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>aidock — Dashboard</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header>
+    <h1>aidock</h1>
+    <span class="subtitle">Multi-AI CLI Orchestration</span>
+    <span id="ws-status" class="ws-badge">connecting...</span>
+  </header>
+
+  <section id="agents" class="agent-grid"></section>
+
+  <section id="board">
+    <h2>Tasks</h2>
+    <div class="board-columns">
+      <div class="column" data-status="pending">
+        <h3>Pending</h3>
+        <div class="card-list" id="col-pending"></div>
+      </div>
+      <div class="column" data-status="running">
+        <h3>Running</h3>
+        <div class="card-list" id="col-running"></div>
+      </div>
+      <div class="column" data-status="done">
+        <h3>Done</h3>
+        <div class="card-list" id="col-done"></div>
+      </div>
+      <div class="column" data-status="failed">
+        <h3>Failed</h3>
+        <div class="card-list" id="col-failed"></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="handoffs">
+    <h2>Handoff Chain</h2>
+    <div id="chain-container"></div>
+  </section>
+
+  <div id="task-modal" class="modal hidden">
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeModal()">&times;</button>
+      <div id="modal-body"></div>
+    </div>
+  </div>
+
+  <script type="module" src="/app.js"></script>
+</body>
+</html>
