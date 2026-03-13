@@ -115,6 +115,8 @@ export async function runHandoff(
     duration: result.duration,
     filesChanged,
     diffStats,
+    errorCategory: result.errorCategory,
+    sessionId: result.sessionId,
   };
 
   if (result.exitCode === 0) {

@@ -12,8 +12,24 @@ export class CodexAdapter extends BaseAdapter {
   command = 'codex';
   minVersion = '0.1.0';
 
+  protected isCompletionEvent(line: string): boolean {
+    try {
+      const event = JSON.parse(line);
+      return event.type === 'turn.completed' || event.type === 'response.completed';
+    } catch {
+      return false;
+    }
+  }
+
   buildArgs(prompt: string, opts: ExecuteOptions): { args: string[]; useStdin: boolean } {
-    const args: string[] = ['exec'];
+    const args: string[] = [];
+
+    // Resume previous session or start new exec
+    if (opts.sessionId) {
+      args.push('resume', opts.sessionId);
+    } else {
+      args.push('exec');
+    }
 
     const permArgs = PERMISSION_MAP[opts.permissionLevel] ?? [];
     args.push(...permArgs);
@@ -42,6 +58,7 @@ export class CodexAdapter extends BaseAdapter {
     // Parse each line, extract content from known event types
     const lines = stdout.trim().split('\n').filter(l => l.trim());
     let content = '';
+    let sessionId: string | undefined;
     const filesChanged: string[] = [];
 
     for (const line of lines) {
@@ -53,6 +70,11 @@ export class CodexAdapter extends BaseAdapter {
       }
 
       const event = parsed;
+
+      // Extract thread_id as session ID
+      if (event.thread_id && !sessionId) {
+        sessionId = event.thread_id;
+      }
 
       // Extract content from different event types
       if (event.type === 'message' && event.content) {
@@ -83,6 +105,7 @@ export class CodexAdapter extends BaseAdapter {
 
     return {
       content: content.trim(),
+      sessionId,
       filesChanged,
       rawOutput: stdout,
       rawStderr: stderr,

@@ -23,6 +23,10 @@ export class ClaudeAdapter extends BaseAdapter {
       args.push('--model', opts.model);
     }
 
+    if (opts.sessionId) {
+      args.push('--resume', opts.sessionId);
+    }
+
     if (prompt && prompt.length < 4096) {
       args.push(prompt);
       return { args, useStdin: false };

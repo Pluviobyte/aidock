@@ -86,12 +86,19 @@ export async function runRetry(taskId: string, opts: RetryOptions): Promise<void
 
   log.agent(task.agent, `Running (attempt ${attempt})...`);
 
+  // Pass previous session ID for context continuity
+  const previousSessionId = task.result?.sessionId;
+  if (previousSessionId) {
+    log.info(`Resuming ${task.agent} session ${previousSessionId}`);
+  }
+
   // Execute
   const result = await adapter.execute(fullPrompt, {
     cwd: task.cwd,
     timeout: opts.timeout || config.defaultTimeout,
     model: opts.model || config.models[task.agent],
     permissionLevel: config.permissionLevel,
+    sessionId: previousSessionId,
   });
 
   // Store logs
@@ -111,6 +118,7 @@ export async function runRetry(taskId: string, opts: RetryOptions): Promise<void
     filesChanged,
     diffStats,
     errorCategory: result.errorCategory,
+    sessionId: result.sessionId,
   };
 
   if (result.exitCode === 0) {

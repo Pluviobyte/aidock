@@ -24,6 +24,10 @@ export class GeminiAdapter extends BaseAdapter {
       args.push('-m', opts.model);
     }
 
+    if (opts.sessionId) {
+      args.push('-r', opts.sessionId);
+    }
+
     // Gemini prefers positional argument
     if (prompt && prompt.length < 4096) {
       args.push(prompt);

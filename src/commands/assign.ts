@@ -94,6 +94,8 @@ export async function runAssign(agentName: string, prompt: string, opts: AssignO
     duration: result.duration,
     filesChanged,
     diffStats,
+    errorCategory: result.errorCategory,
+    sessionId: result.sessionId,
   };
 
   if (result.exitCode === 0) {

@@ -95,6 +95,11 @@ export abstract class BaseAdapter {
   abstract buildArgs(prompt: string, opts: ExecuteOptions): { args: string[]; useStdin: boolean };
   abstract parseOutput(stdout: string, stderr: string, exitCode: number): NormalizedResult;
 
+  /** Override to detect completion events in stdout stream (e.g. Codex turn.completed). */
+  protected isCompletionEvent(_line: string): boolean {
+    return false;
+  }
+
   async detect(): Promise<AgentStatus> {
     try {
       const version = execSync(`${this.command} --version 2>/dev/null`, {
@@ -163,8 +168,27 @@ export abstract class BaseAdapter {
 
         let stdout = '';
         let stderr = '';
+        let completionDetected = false;
 
-        child.stdout.on('data', (chunk: Buffer) => { stdout += chunk.toString(); });
+        child.stdout.on('data', (chunk: Buffer) => {
+          const text = chunk.toString();
+          stdout += text;
+
+          // Check for completion events line by line
+          if (!completionDetected) {
+            const lines = text.split('\n');
+            for (const line of lines) {
+              if (line.trim() && this.isCompletionEvent(line.trim())) {
+                completionDetected = true;
+                // Give a short grace period then terminate
+                setTimeout(() => {
+                  if (!child.killed) child.kill('SIGTERM');
+                }, 500);
+                break;
+              }
+            }
+          }
+        });
         child.stderr.on('data', (chunk: Buffer) => { stderr += chunk.toString(); });
 
         // Timeout: SIGTERM → 2s → SIGKILL

@@ -36,4 +36,5 @@ export interface ExecuteOptions {
   model?: string;
   context?: string;
   permissionLevel: PermissionLevel;
+  sessionId?: string;
 }

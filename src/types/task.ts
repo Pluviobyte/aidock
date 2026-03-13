@@ -10,6 +10,7 @@ export interface TaskResult {
   filesChanged: string[];
   diffStats: { additions: number; deletions: number };
   errorCategory?: ErrorCategory;
+  sessionId?: string;
 }
 
 export interface RetryRecord {
