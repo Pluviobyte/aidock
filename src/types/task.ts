@@ -1,4 +1,4 @@
-import type { AgentName } from './agent.js';
+import type { AgentName, ErrorCategory } from './agent.js';
 
 export type TaskStatus = 'pending' | 'running' | 'done' | 'failed' | 'handed_off';
 
@@ -9,6 +9,15 @@ export interface TaskResult {
   duration: number;
   filesChanged: string[];
   diffStats: { additions: number; deletions: number };
+  errorCategory?: ErrorCategory;
+}
+
+export interface RetryRecord {
+  attempt: number;
+  error: string;
+  exitCode: number;
+  errorCategory: ErrorCategory;
+  timestamp: string;
 }
 
 export interface Task {
@@ -23,4 +32,6 @@ export interface Task {
   parentTaskId?: string;
   handoffId?: string;
   cwd: string;
+  attempt?: number;
+  retryHistory?: RetryRecord[];
 }

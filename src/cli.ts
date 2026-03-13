@@ -5,6 +5,7 @@ import { runAssign } from './commands/assign.js';
 import { runStatus } from './commands/status.js';
 import { runHandoff } from './commands/handoff.js';
 import { runHistory } from './commands/history.js';
+import { runRetry } from './commands/retry.js';
 
 const program = new Command();
 
@@ -84,6 +85,20 @@ program
   .option('--json', 'Output as JSON')
   .action((opts: any) => {
     runHistory(process.cwd(), opts);
+  });
+
+program
+  .command('retry')
+  .description('Retry a failed task')
+  .argument('<taskId>', 'Task ID to retry (e.g. t_abc123)')
+  .option('--timeout <seconds>', 'Execution timeout in seconds', '300')
+  .option('--model <model>', 'Override default model')
+  .action(async (taskId: string, opts: any) => {
+    await runRetry(taskId, {
+      cwd: process.cwd(),
+      timeout: parseInt(opts.timeout),
+      model: opts.model,
+    });
   });
 
 program

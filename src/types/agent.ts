@@ -16,6 +16,8 @@ export interface AgentStatus {
 
 export type PermissionLevel = 'safe' | 'auto' | 'full';
 
+export type ErrorCategory = 'auth' | 'rate_limit' | 'timeout' | 'not_found' | 'task_error' | 'unknown';
+
 export interface NormalizedResult {
   content: string;
   sessionId?: string;
@@ -25,6 +27,7 @@ export interface NormalizedResult {
   rawStderr: string;
   exitCode: number;
   duration: number;
+  errorCategory?: ErrorCategory;
 }
 
 export interface ExecuteOptions {
